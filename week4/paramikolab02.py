@@ -8,9 +8,9 @@ routers = [1, 2, 3]
 devices_ip = "172.31.101.%s"
 
 command = {
-    "r1": "conf t\nint g0/2\nip add 172.31.101.34 255.255.255.240\nno shut\nex\nrouter ospf 1 vrf Control-DataVRF\nrouter-id 1.1.1.1\nnetwork 172.31.101.0 0.0.0.31 area 0\nnetwork 1.1.1.1 0.0.0.0 area 0\ndo wr",
-    "r2": "conf t\nint g0/1\nip add 172.31.101.33 255.255.255.240\nint g0/2\nip add 172.31.101.50 255.255.255.240\nno shut\nex\nrouter ospf 1 vrf Control-DataVRF\nrouter-id 2.2.2.2\nnetwork 172.31.101.32 0.0.0.15 area 0\nnetwork 172.31.101.48 0.0.0.15 area 0\nnetwork 2.2.2.2 0.0.0.0 area 0\nex\ndo wr",
-    "r3": "conf t\nip access-list extended Block-telnet/SSH\ndeny tcp any any eq 22\ndeny tcp any any eq 23\nint g0/1\nip add 172.31.101.49 255.255.255.240\nno shut\nint g0/2\nip add dhcp\nip access-group Block-telnet/SSH in\nip route vrf Control-DataVRF 0.0.0.0 0.0.0.0 g0/2\nno shut\nex\nrouter ospf 1 vrf Control-DataVRF\nrouter-id 3.3.3.3\nredistribute static\nnetwork 172.31.101.48 0.0.0.15 area 0\nnetwork 3.3.3.3 0.0.0.0 area 0\nex\naccess-list 1 permit any\nip nat inside source list 1 int g0/2 overload\nint g0/2\nip nat outside\nint g0/1\nip nat inside\ndo wr"
+    "r1": ["conf t", "int g0/2", "ip add 172.31.101.34 255.255.255.240", "no shut", "ex", "router ospf 1 vrf Control-DataVRF", "router-id 1.1.1.1", "network 172.31.101.0 0.0.0.31 area 0", "network 1.1.1.1 0.0.0.0 area 0", "do wr"],
+    "r2": ["conf t", "int g0/1", "ip add 172.31.101.33 255.255.255.240", "int g0/2", "ip add 172.31.101.50 255.255.255.240", "no shut", "ex", "router ospf 1 vrf Control-DataVRF", "router-id 2.2.2.2", "network 172.31.101.32 0.0.0.15 area 0", "network 172.31.101.48 0.0.0.15 area 0", "network 2.2.2.2 0.0.0.0 area 0", "ex", "do wr"],
+    "r3": ["conf t", "ip access-list extended Block-telnet/SSH", "deny tcp any any eq 22", "deny tcp any any eq 23", "int g0/1", "ip add 172.31.101.49 255.255.255.240", "no shut", "int g0/2", "ip add dhcp", "ip access-group Block-telnet/SSH in", "ip route vrf Control-DataVRF 0.0.0.0 0.0.0.0 g0/2", "no shut", "ex", "router ospf 1 vrf Control-DataVRF", "router-id 3.3.3.3", "redistribute static", "network 172.31.101.48 0.0.0.15 area 0", "network 3.3.3.3 0.0.0.0 area 0", "ex", "access-list 1 permit any", "ip nat inside source list 1 int g0/2 overload", "int g0/2", "ip nat outside", "int g0/1", "ip nat inside", "do wr"]
 }
 
 for r in routers:
@@ -21,9 +21,9 @@ for r in routers:
 
     with client.invoke_shell() as ssh:
         print("Connecting to {} ...".format(ip))
-        
-        ssh.send(command["r%s" %r] + "\n")
-        time.sleep(1)
-        result = ssh.recv(1000).decode("ascii")
-        print(result)
+        for i in command["r%s" %r]:
+            ssh.send(i+ "\n")
+            time.sleep(1)
+            result = ssh.recv(1000).decode("ascii")
+            print(result)
     client.close()
