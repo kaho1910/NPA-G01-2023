@@ -13,6 +13,19 @@ def get_ip(device_params, intf):
         if words[0][0] == intf[0] and words[0][-3:] == intf[1:]:
             return words[1]
 
+def get_subnet(device_params, intf):
+    data = get_data_from_device(device_params, "sh run int {}".format(intf))
+    result = data.strip().split("\n")
+    for line in result[5:]:
+        line = line.strip()
+        if "ip address" in line:
+            ans = line.split()[-1]
+            if ans == "dhcp":
+                return "dhcp"
+            if line == "no ip address":
+                return "no ip address"
+            return line.split()[-1]
+
 def get_desc_n_stat(device_params, intf):
     '''
         return description and status in tuple
@@ -81,11 +94,12 @@ if __name__ == "__main__":
 
     for device in ["R1", "R2", "R3"]:
         device_params["ip"] = devices_ip[device]
-        with ConnectHandler(**device_params) as ssh:
-            result = ssh.send_config_set(commands[device])
-            print(result)
+        # with ConnectHandler(**device_params) as ssh:
+            # result = ssh.send_config_set(commands[device])
+            # print(result)
 
 
-        # for i in range(4):
-        #     print(get_ip(device_params, "G0/0"))
+        for i in range(4):
+            print(get_subnet(device_params, "G0/%d" %i))
+        #     print(get_ip(device_params, "G0/%d" %i))
         #     print(get_desc_n_stat(device_params, "G0/%d" %i))
