@@ -70,7 +70,7 @@ if __name__ == "__main__":
             "int G0/1",
             "description Connect to G0/2 of R2",
             "int G0/2",
-            "description Connect to WAN2",
+            "description Connect to WAN",
             "int G0/3",
             "description Not Use"
         ]}
