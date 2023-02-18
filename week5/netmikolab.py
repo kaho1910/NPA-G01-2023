@@ -69,7 +69,8 @@ if __name__ == "__main__":
             "int G0/2",
             "description Connect to G0/1 of R2",
             "int G0/3",
-            "description Not Use"
+            "description Not Use",
+            "do wr"
         ],
         "R2":[
             "int G0/0",
@@ -79,7 +80,8 @@ if __name__ == "__main__":
             "int G0/2",
             "description Connect to G0/1 of R3",
             "int G0/3",
-            "description Not Use"
+            "description Not Use",
+            "do wr"
         ],
         "R3":[
             "int G0/0",
@@ -89,7 +91,8 @@ if __name__ == "__main__":
             "int G0/2",
             "description Connect to WAN",
             "int G0/3",
-            "description Not Use"
+            "description Not Use",
+            "do wr"
         ]}
 
     for device in ["R1", "R2", "R3"]:
