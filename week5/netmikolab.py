@@ -14,6 +14,10 @@ def get_ip(device_params, intf):
             return words[1]
 
 def get_desc_n_stat(device_params, intf):
+    '''
+        return description and status in tuple
+        ex. ("This is Desc", ("Status1", "Status2"))
+    '''
     data = get_data_from_device(device_params, "sh int des")
     result = data.strip().split("\n")
     for line in result[1:]:
