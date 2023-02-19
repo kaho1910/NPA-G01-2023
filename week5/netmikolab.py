@@ -90,9 +90,9 @@ if __name__ == "__main__":
 
     for device in ["R1", "R2", "R3"]:
         device_params["ip"] = devices_ip[device]
-        # with ConnectHandler(**device_params) as ssh:
-        #     result = ssh.send_config_set(commands[device])
-        #     print(result)
+        with ConnectHandler(**device_params) as ssh:
+            result = ssh.send_config_set(commands[device])
+            print(result)
 
 
         # for i in range(4):
