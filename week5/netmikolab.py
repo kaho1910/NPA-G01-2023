@@ -31,15 +31,11 @@ def get_desc_n_stat(device_params, intf):
     data = get_data_from_device(device_params, "sh int des")
     result = data.strip().split("\n")
     for line in result[1:]:
-        words = [i.strip() for i in line.split()]
-        if words[0][0] == intf[0] and words[0][-len(intf) + 1:] == intf[1:]:
-            if words[2] == "down":
-                ans1 = " ".join(words[4:])
-                ans2 = " ".join(words[1:3]), words[3]
-            else:
-                ans1 = " ".join(words[3:])
-                ans2 = words[1], words[2]
-            return ans1, ans2
+        intf_data = re.search(r"(\w)\w+(\d/\d)\s+(up|admin down)\s+(up|down)\s+(.+)", line)
+        if intf_data is not None:
+            intf_type, intf_num, intf_stat, intf_prot, intf_desc = intf_data.groups()
+            if intf_type == intf[0] and intf_num == intf[1:]:
+                return (intf_desc, (intf_stat, intf_prot))
 
 if __name__ == "__main__":
     devices_ip = {
@@ -99,7 +95,7 @@ if __name__ == "__main__":
         #     print(result)
 
 
-        for i in range(4):
+        # for i in range(4):
             # print(get_ip(device_params, "G0/%d" %i))
-            print(get_subnet(device_params, "G0/%d" %i))
+            # print(get_subnet(device_params, "G0/%d" %i))
             # print(get_desc_n_stat(device_params, "G0/%d" %i))
