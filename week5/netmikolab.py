@@ -1,3 +1,4 @@
+import re
 from netmiko import ConnectHandler
 
 def get_data_from_device(device_params, command):
@@ -9,9 +10,9 @@ def get_ip(device_params, intf):
     data = get_data_from_device(device_params, "sh ip int br")
     result = data.strip().split("\n")
     for line in result[1:]:
-        words = line.split()
-        if words[0][0] == intf[0] and words[0][-3:] == intf[1:]:
-            return words[1]
+        intf_type, intf_num, intf_ip = re.search(r"(\w)\w+(\d+/\d)\s+(\d+\.\d+\.\d+\.\d+|unassigned).*", line).groups()
+        if intf_type == intf[0] and intf_num == intf[1:]:
+            return intf_ip
 
 def get_subnet(device_params, intf):
     data = get_data_from_device(device_params, "sh run int {}".format(intf))
@@ -97,12 +98,12 @@ if __name__ == "__main__":
 
     for device in ["R1", "R2", "R3"]:
         device_params["ip"] = devices_ip[device]
-        with ConnectHandler(**device_params) as ssh:
-            result = ssh.send_config_set(commands[device])
-            print(result)
+        # with ConnectHandler(**device_params) as ssh:
+        #     result = ssh.send_config_set(commands[device])
+        #     print(result)
 
 
-        # for i in range(4):
-        #     print(get_subnet(device_params, "G0/%d" %i))
-        #     print(get_ip(device_params, "G0/%d" %i))
-        #     print(get_desc_n_stat(device_params, "G0/%d" %i))
+        for i in range(4):
+            # print(get_ip(device_params, "G0/%d" %i))
+            print(get_subnet(device_params, "G0/%d" %i))
+            # print(get_desc_n_stat(device_params, "G0/%d" %i))
