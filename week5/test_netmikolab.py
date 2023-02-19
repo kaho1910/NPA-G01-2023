@@ -15,45 +15,45 @@ device_params = {
     "password": password
 }
 
-# def test_ip_R1():
-#     device_params["ip"] = devices_ip["R1"]
-#     assert get_ip(device_params, "G0/0") == "172.31.101.4"
-#     assert get_ip(device_params, "G0/1") == "172.31.101.17"
-#     assert get_ip(device_params, "G0/2") == "172.31.101.34"
-#     assert get_ip(device_params, "G0/3") == "unassigned"
+def test_ip_R1():
+    device_params["ip"] = devices_ip["R1"]
+    assert get_ip(device_params, "G0/0") == "172.31.101.4"
+    assert get_ip(device_params, "G0/1") == "172.31.101.17"
+    assert get_ip(device_params, "G0/2") == "172.31.101.34"
+    assert get_ip(device_params, "G0/3") == "unassigned"
 
-# def test_ip_R2():
-#     device_params["ip"] = devices_ip["R2"]
-#     assert get_ip(device_params, "G0/0") == "172.31.101.5"
-#     assert get_ip(device_params, "G0/1") == "172.31.101.33"
-#     assert get_ip(device_params, "G0/2") == "172.31.101.50"
-#     assert get_ip(device_params, "G0/3") == "unassigned"
+def test_ip_R2():
+    device_params["ip"] = devices_ip["R2"]
+    assert get_ip(device_params, "G0/0") == "172.31.101.5"
+    assert get_ip(device_params, "G0/1") == "172.31.101.33"
+    assert get_ip(device_params, "G0/2") == "172.31.101.50"
+    assert get_ip(device_params, "G0/3") == "unassigned"
 
-# def test_ip_R3():
-#     device_params["ip"] = devices_ip["R3"]
-#     assert get_ip(device_params, "G0/0") == "172.31.101.6"
-#     assert get_ip(device_params, "G0/1") == "172.31.101.49"
-#     assert get_ip(device_params, "G0/3") == "unassigned"
+def test_ip_R3():
+    device_params["ip"] = devices_ip["R3"]
+    assert get_ip(device_params, "G0/0") == "172.31.101.6"
+    assert get_ip(device_params, "G0/1") == "172.31.101.49"
+    assert get_ip(device_params, "G0/3") == "unassigned"
 
-# def test_subnet_R1():
-#     device_params["ip"] = devices_ip["R1"]
-#     assert get_subnet(device_params, "G0/0") == "255.255.255.240"
-#     assert get_subnet(device_params, "G0/1") == "255.255.255.240"
-#     assert get_subnet(device_params, "G0/2") == "255.255.255.240"
-#     assert get_subnet(device_params, "G0/3") == "no ip address"
+def test_subnet_R1():
+    device_params["ip"] = devices_ip["R1"]
+    assert get_subnet(device_params, "G0/0") == "255.255.255.240"
+    assert get_subnet(device_params, "G0/1") == "255.255.255.240"
+    assert get_subnet(device_params, "G0/2") == "255.255.255.240"
+    assert get_subnet(device_params, "G0/3") == "no ip address"
 
-# def test_subnet_R2():
-#     device_params["ip"] = devices_ip["R2"]
-#     assert get_subnet(device_params, "G0/0") == "255.255.255.240"
-#     assert get_subnet(device_params, "G0/1") == "255.255.255.240"
-#     assert get_subnet(device_params, "G0/2") == "255.255.255.240"
-#     assert get_subnet(device_params, "G0/3") == "no ip address"
+def test_subnet_R2():
+    device_params["ip"] = devices_ip["R2"]
+    assert get_subnet(device_params, "G0/0") == "255.255.255.240"
+    assert get_subnet(device_params, "G0/1") == "255.255.255.240"
+    assert get_subnet(device_params, "G0/2") == "255.255.255.240"
+    assert get_subnet(device_params, "G0/3") == "no ip address"
 
-# def test_subnet_R3():
-#     device_params["ip"] = devices_ip["R3"]
-#     assert get_subnet(device_params, "G0/0") == "255.255.255.240"
-#     assert get_subnet(device_params, "G0/1") == "255.255.255.240"
-#     assert get_subnet(device_params, "G0/3") == "no ip address"
+def test_subnet_R3():
+    device_params["ip"] = devices_ip["R3"]
+    assert get_subnet(device_params, "G0/0") == "255.255.255.240"
+    assert get_subnet(device_params, "G0/1") == "255.255.255.240"
+    assert get_subnet(device_params, "G0/3") == "no ip address"
 
 def test_desc_n_stat_R1():
     device_params["ip"] = devices_ip["R1"]
