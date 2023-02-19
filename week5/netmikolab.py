@@ -18,14 +18,10 @@ def get_subnet(device_params, intf):
     data = get_data_from_device(device_params, "sh run int {}".format(intf))
     result = data.strip().split("\n")
     for line in result[5:]:
-        line = line.strip()
-        if "ip address" in line:
-            ans = line.split()[-1]
-            if ans == "dhcp":
-                return "dhcp"
-            if line == "no ip address":
-                return "no ip address"
-            return line.split()[-1]
+        intf_subnet = re.search(r"(no ip address|\d+\.\d+\.\d+\.\d+$|dhcp)", line)
+        if intf_subnet is not None:
+            intf_subnet = intf_subnet.group(0)
+            return intf_subnet
 
 def get_desc_n_stat(device_params, intf):
     '''
