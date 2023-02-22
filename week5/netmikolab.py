@@ -19,13 +19,11 @@ def get_ip(device_params, intf):
                 return i["ipaddr"]
 
 def get_subnet(device_params, intf):
-    data = get_data_from_device(device_params, "sh run int {}".format(intf))
-    result = data.strip().split("\n")
-    for line in result[5:]:
-        intf_subnet = re.search(r"(no ip address|\d+\.\d+\.\d+\.\d+$|dhcp)", line)
-        if intf_subnet is not None:
-            intf_subnet = intf_subnet.group(0)
-            return intf_subnet
+    data = get_data_from_device(device_params, "sh ip int {}".format(intf))
+    if data[0]["ipaddr"] == []:
+        return "no ip address"
+    ans = cidr_to_netmask(data[0]["mask"][0])
+    return ans
 
 def get_desc_n_stat(device_params, intf):
     '''
@@ -40,6 +38,11 @@ def get_desc_n_stat(device_params, intf):
             intf_type, intf_num, intf_stat, intf_prot, intf_desc = intf_data.groups()
             if intf_type == intf[0] and intf_num == intf[1:]:
                 return (intf_desc, (intf_stat, intf_prot))
+
+def cidr_to_netmask(net_bits):
+    host_bits = 32 - int(net_bits)
+    netmask = socket.inet_ntoa(struct.pack('!I', (1 << 32) - (1 << host_bits)))
+    return netmask
 
 if __name__ == "__main__":
     devices_ip = {
