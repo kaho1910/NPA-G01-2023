@@ -1,10 +1,13 @@
 import re
 from netmiko import ConnectHandler
+# from pprint import pprint
+import struct
+import socket
 
 def get_data_from_device(device_params, command):
     with ConnectHandler(**device_params) as ssh:
-        result_shipintbr = ssh.send_command(command)
-        return result_shipintbr
+        result = ssh.send_command(command, use_textfsm=True)
+        return result
 
 def get_ip(device_params, intf):
     data = get_data_from_device(device_params, "sh ip int br")
@@ -93,7 +96,7 @@ if __name__ == "__main__":
         with ConnectHandler(**device_params) as ssh:
             result = ssh.send_config_set(commands[device])
             print(result)
-
+        # pprint(get_data_from_device(device_params, "sh ip int br"))
 
         # for i in range(4):
             # print(get_ip(device_params, "G0/%d" %i))
