@@ -11,11 +11,12 @@ def get_data_from_device(device_params, command):
 
 def get_ip(device_params, intf):
     data = get_data_from_device(device_params, "sh ip int br")
-    result = data.strip().split("\n")
-    for line in result[1:]:
-        intf_type, intf_num, intf_ip = re.search(r"(\w)\w+(\d+/\d)\s+(\d+\.\d+\.\d+\.\d+|unassigned).*", line).groups()
-        if intf_type == intf[0] and intf_num == intf[1:]:
-            return intf_ip
+    for i in data:
+        result = re.search(r"(\w)\w+(\d+/\d+)", i["intf"])
+        if result is not None:
+            intf_type, intf_num = result.groups()
+            if intf_type == intf[0] and intf_num == intf[1:]:
+                return i["ipaddr"]
 
 def get_subnet(device_params, intf):
     data = get_data_from_device(device_params, "sh run int {}".format(intf))
