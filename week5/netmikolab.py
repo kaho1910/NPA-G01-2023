@@ -31,13 +31,12 @@ def get_desc_n_stat(device_params, intf):
         ex. ("This is Desc", ("Status1", "Status2"))
     '''
     data = get_data_from_device(device_params, "sh int des")
-    result = data.strip().split("\n")
-    for line in result[1:]:
-        intf_data = re.search(r"(\w)\w+(\d/\d)\s+(up|admin down)\s+(up|down)\s+(.+)", line)
-        if intf_data is not None:
-            intf_type, intf_num, intf_stat, intf_prot, intf_desc = intf_data.groups()
+    for i in data:
+        result = re.search(r"(\w)\w+(\d+/\d+)", i["port"])
+        if result is not None:
+            intf_type, intf_num = result.groups()
             if intf_type == intf[0] and intf_num == intf[1:]:
-                return (intf_desc, (intf_stat, intf_prot))
+                return (i["descrip"], (i["status"], i["protocol"]))
 
 def cidr_to_netmask(net_bits):
     host_bits = 32 - int(net_bits)
