@@ -1,27 +1,29 @@
 import re
 from netmiko import ConnectHandler
+# from pprint import pprint
+import struct
+import socket
 
 def get_data_from_device(device_params, command):
     with ConnectHandler(**device_params) as ssh:
-        result_shipintbr = ssh.send_command(command)
-        return result_shipintbr
+        result = ssh.send_command(command, use_textfsm=True)
+        return result
 
 def get_ip(device_params, intf):
     data = get_data_from_device(device_params, "sh ip int br")
-    result = data.strip().split("\n")
-    for line in result[1:]:
-        intf_type, intf_num, intf_ip = re.search(r"(\w)\w+(\d+/\d)\s+(\d+\.\d+\.\d+\.\d+|unassigned).*", line).groups()
-        if intf_type == intf[0] and intf_num == intf[1:]:
-            return intf_ip
+    for i in data:
+        result = re.search(r"(\w)\w+(\d+/\d+)", i["intf"])
+        if result is not None:
+            intf_type, intf_num = result.groups()
+            if intf_type == intf[0] and intf_num == intf[1:]:
+                return i["ipaddr"]
 
 def get_subnet(device_params, intf):
-    data = get_data_from_device(device_params, "sh run int {}".format(intf))
-    result = data.strip().split("\n")
-    for line in result[5:]:
-        intf_subnet = re.search(r"(no ip address|\d+\.\d+\.\d+\.\d+$|dhcp)", line)
-        if intf_subnet is not None:
-            intf_subnet = intf_subnet.group(0)
-            return intf_subnet
+    data = get_data_from_device(device_params, "sh ip int {}".format(intf))
+    if data[0]["ipaddr"] == []:
+        return "no ip address"
+    ans = cidr_to_netmask(data[0]["mask"][0])
+    return ans
 
 def get_desc_n_stat(device_params, intf):
     '''
@@ -29,13 +31,17 @@ def get_desc_n_stat(device_params, intf):
         ex. ("This is Desc", ("Status1", "Status2"))
     '''
     data = get_data_from_device(device_params, "sh int des")
-    result = data.strip().split("\n")
-    for line in result[1:]:
-        intf_data = re.search(r"(\w)\w+(\d/\d)\s+(up|admin down)\s+(up|down)\s+(.+)", line)
-        if intf_data is not None:
-            intf_type, intf_num, intf_stat, intf_prot, intf_desc = intf_data.groups()
+    for i in data:
+        result = re.search(r"(\w)\w+(\d+/\d+)", i["port"])
+        if result is not None:
+            intf_type, intf_num = result.groups()
             if intf_type == intf[0] and intf_num == intf[1:]:
-                return (intf_desc, (intf_stat, intf_prot))
+                return (i["descrip"], (i["status"], i["protocol"]))
+
+def cidr_to_netmask(net_bits):
+    host_bits = 32 - int(net_bits)
+    netmask = socket.inet_ntoa(struct.pack('!I', (1 << 32) - (1 << host_bits)))
+    return netmask
 
 if __name__ == "__main__":
     devices_ip = {
@@ -93,7 +99,7 @@ if __name__ == "__main__":
         with ConnectHandler(**device_params) as ssh:
             result = ssh.send_config_set(commands[device])
             print(result)
-
+        # pprint(get_data_from_device(device_params, "sh ip int br"))
 
         # for i in range(4):
             # print(get_ip(device_params, "G0/%d" %i))
