@@ -77,36 +77,35 @@ def check_desc_n_stat_R3():
     assert get_desc_n_stat(r3_params, "G0/2") == ("Connect to WAN", ("up", "up"))
     assert get_desc_n_stat(r3_params, "G0/3") == ("Not Use", ("admin down", "down"))
 
-def test_r1():
+def test_ip():
     p1 = Process(target=check_ip_R1)
     p1.start()
-    p2 = Process(target=check_subnet_R1)
+    p2 = Process(target=check_ip_R2)
     p2.start()
-    p3 = Process(target=check_desc_n_stat_R1)
+    p3 = Process(target=check_ip_R3)
     p3.start()
     p1.join()
     p2.join()
     p3.join()
 
-def test_r2():
-    p1 = Process(target=check_ip_R2)
+def test_subnet():
+    p1 = Process(target=check_subnet_R1)
     p1.start()
     p2 = Process(target=check_subnet_R2)
     p2.start()
-    p3 = Process(target=check_desc_n_stat_R2)
+    p3 = Process(target=check_subnet_R3)
     p3.start()
     p1.join()
     p2.join()
     p3.join()
 
-def test_r3():
-    p1 = Process(target=check_ip_R3)
+def test_desc_n_stat():
+    p1 = Process(target=check_desc_n_stat_R1)
     p1.start()
-    p2 = Process(target=check_subnet_R3)
+    p2 = Process(target=check_desc_n_stat_R2)
     p2.start()
     p3 = Process(target=check_desc_n_stat_R3)
     p3.start()
     p1.join()
     p2.join()
     p3.join()
-
