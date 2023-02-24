@@ -1,0 +1,8 @@
+{# Interfaces configuration -#}
+
+{%- for i in int_desc %}
+int {{ i["interface"] }}
+description {{ i["desc"] }}
+{% endfor %}
+
+do wr
