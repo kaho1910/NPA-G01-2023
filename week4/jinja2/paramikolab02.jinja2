@@ -1,0 +1,41 @@
+{# Interfaces configuration -#}
+conf t
+
+ip access-list extended Block-telnet/SSH
+deny tcp any any eq 22
+deny tcp any any eq 23
+permit ip any any
+
+{%- for i in interface %}
+int {{ i["int"] }}
+ip access-group Block-telnet/SSH in
+{%- if hostname != "R1" %}
+    ip add {{ i["ip"] }} {{ i["netmask"] }}
+    no shut
+{% endif %} 
+{% endfor %}
+ex
+
+router ospf 1 vrf Control-DataVRF
+router-id {{ routerID }}
+{%- for i in routerOSPF %}
+{%- if hostname == "R3" %}
+default-information originate
+{% endif %}
+network {{ i["network"] }} {{ i["wildcard"] }} area {{ i["area"] }}
+{% endfor %}
+ex
+
+{%- if hostname == "R3" %}
+access-list 1 permit any
+ip nat inside source list 1 int {{ intNATOutside }} vrf Control-DataVRF overload
+int {{ intNATOutside }}
+ip nat outside
+int {{ intNATInside }}
+ip nat inside
+ex
+
+ip route vrf Control-DataVRF 0.0.0.0 0.0.0.0 192.168.122.1
+{% endif %}
+
+do wr
