@@ -10,8 +10,8 @@ permit ip any any
 int {{ i["int"] }}
 ip access-group Block-telnet/SSH in
 {%- if hostname != "R1" %}
-    ip add {{ i["ip"] }} {{ i["netmask"] }}
-    no shut
+ip add {{ i["ip"] }} {{ i["netmask"] }}
+no shut
 {% endif %} 
 {% endfor %}
 ex
